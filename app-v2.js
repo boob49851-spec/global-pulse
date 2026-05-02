@@ -941,6 +941,7 @@ function cityJump(q) {
   }
 }
 function startLoops() {
+initMobileUI();  
 initWebSocket();   
 loadLiveStream();
 document.getElementById('stream-switch-btn').addEventListener('click',switchStream);
@@ -1170,6 +1171,41 @@ sheet.addEventListener("touchend", () => {
   }
 });
 document.addEventListener('DOMContentLoaded', runBoot);
-if (window.innerWidth < 768) {
-  initMobileUI();
+// ================= MOBILE UI =================
+function initMobileUI() {
+  console.log('[Mobile UI] Initialized');
+
+  // إنشاء زر القائمة
+  const menuBtn = document.createElement('button');
+  menuBtn.innerHTML = '☰';
+  menuBtn.className = 'mobile-menu-btn';
+  document.body.appendChild(menuBtn);
+
+  // إنشاء القائمة
+  const panel = document.createElement('div');
+  panel.className = 'mobile-panel';
+  panel.innerHTML = `
+    <div class="mobile-header">
+      <span>📡 Global Pulse</span>
+      <button id="close-mobile">✕</button>
+    </div>
+    <div class="mobile-content">
+      <button onclick="setView('live')">البث المباشر</button>
+      <button onclick="setView('timeline')">الزمن</button>
+      <button onclick="setView('analytics')">تحليل</button>
+      <button onclick="toggleAutoRotate()">تدوير الكرة</button>
+      <button onclick="toggleDensity()">وضع مضغوط</button>
+    </div>
+  `;
+  document.body.appendChild(panel);
+
+  // فتح القائمة
+  menuBtn.onclick = () => {
+    panel.classList.add('open');
+  };
+
+  // إغلاق القائمة
+  panel.querySelector('#close-mobile').onclick = () => {
+    panel.classList.remove('open');
+  };
 }
