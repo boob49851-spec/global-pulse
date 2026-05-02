@@ -11,6 +11,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles-v2.css" />
 <link rel="icon" type="image/svg+xml" href="logo.svg" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#4cc9f0"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="مرصد اخباري"/>
+<meta name="application-name" content="مرصد اخباري"/>
+<meta name="msapplication-TileColor" content="#000000"/>
+<meta name="msapplication-tap-highlight" content="no"/>
 </head>
 <body>
 <div id="breaking-bar" class="breaking-bar" style="display:none">
@@ -237,5 +246,18 @@
 <script src="app-v2.js"></script>
 <audio id="alert-critical" src="alert-critical.mp3" preload="auto"></audio>
 <audio id="alert-high" src="alert-high.mp3" preload="auto"></audio>
+<script>
+if('serviceWorker' in navigator){
+window.addEventListener('load',()=>{
+navigator.serviceWorker.register('/sw.js')
+.then((registration)=>{
+console.log('[SW] مسجل بنجاح:',registration.scope);
+})
+.catch((error)=>{
+console.log('[SW] فشل التسجيل:',error);
+});
+});
+}
+</script>
 </body>
 </html>
