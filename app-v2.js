@@ -468,15 +468,29 @@ function runBoot() {
   tick();
 }
 function initGlobe() {
-  const el = document.getElementById('globe');
-  globe = Globe()(el)
-    .width(el.clientWidth)
-    .height(el.clientHeight)
-    .backgroundColor('#00000000')
-    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-    .showAtmosphere(true)
-    .atmosphereColor('#4cc9f0')
-    .atmosphereAltitude(0.32);
+   const el = document.getElementById('globe')
+   globe = Globe()(el)
+     .width(el.clientWidth)
+     .height(el.clientHeight)
+     .backgroundColor('#00000000')
+     .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+     .showAtmosphere(true)
+     .atmosphereColor('#4cc9f0')
+     .atmosphereAltitude(0.32);
+
+   // Responsive: Adjust for mobile
+   function handleResize() {
+     if(window.innerWidth <= 768) {
+       globe.width(window.innerWidth)
+       globe.height(window.innerHeight)
+     } else {
+       globe.width(el.clientWidth)
+       globe.height(el.clientHeight)
+     }
+     const pov = globe.pointOfView()
+     globe.pointOfView({ ...pov }, 0)
+   }
+   window.addEventListener('resize', handleResize)
   globe
   .hexBinPointsData([])
   .hexBinPointWeight('weight')
@@ -545,9 +559,19 @@ function initGlobe() {
   el.addEventListener('mousedown', killAuto);
   el.addEventListener('touchstart', killAuto, { passive: true });
   el.addEventListener('wheel', killAuto, { passive: true });
-  const scene = globe.scene();
-  scene.background = null;
-  globe.pointOfView({ lat: 30, lng: 15, altitude: 2.2 }, 0);
+const scene = globe.scene();
+   scene.background = null;
+   globe.pointOfView({ lat: 30, lng: 15, altitude: 2.2 }, 0);
+
+   // Touch optimization for mobile
+   let touchStartX = 0;
+   let touchStartY = 0;
+   el.addEventListener('touchstart', (e) => {
+     if(e.touches.length === 1) {
+       touchStartX = e.touches[0].clientX;
+       touchStartY = e.touches[0].clientY;
+     }
+   }, { passive: true });
   let lastAlt = 2.2;
   function labelZoomLoop() {
     const pov = globe.pointOfView();
