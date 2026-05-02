@@ -468,29 +468,15 @@ function runBoot() {
   tick();
 }
 function initGlobe() {
-   const el = document.getElementById('globe')
-   globe = Globe()(el)
-     .width(el.clientWidth)
-     .height(el.clientHeight)
-     .backgroundColor('#00000000')
-     .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-     .showAtmosphere(true)
-     .atmosphereColor('#4cc9f0')
-     .atmosphereAltitude(0.32);
-
-   // Responsive: Adjust for mobile
-   function handleResize() {
-     if(window.innerWidth <= 768) {
-       globe.width(window.innerWidth)
-       globe.height(window.innerHeight)
-     } else {
-       globe.width(el.clientWidth)
-       globe.height(el.clientHeight)
-     }
-     const pov = globe.pointOfView()
-     globe.pointOfView({ ...pov }, 0)
-   }
-   window.addEventListener('resize', handleResize)
+  const el = document.getElementById('globe');
+  globe = Globe()(el)
+    .width(el.clientWidth)
+    .height(el.clientHeight)
+    .backgroundColor('#00000000')
+    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+    .showAtmosphere(true)
+    .atmosphereColor('#4cc9f0')
+    .atmosphereAltitude(0.32);
   globe
   .hexBinPointsData([])
   .hexBinPointWeight('weight')
@@ -559,19 +545,9 @@ function initGlobe() {
   el.addEventListener('mousedown', killAuto);
   el.addEventListener('touchstart', killAuto, { passive: true });
   el.addEventListener('wheel', killAuto, { passive: true });
-const scene = globe.scene();
-   scene.background = null;
-   globe.pointOfView({ lat: 30, lng: 15, altitude: 2.2 }, 0);
-
-   // Touch optimization for mobile
-   let touchStartX = 0;
-   let touchStartY = 0;
-   el.addEventListener('touchstart', (e) => {
-     if(e.touches.length === 1) {
-       touchStartX = e.touches[0].clientX;
-       touchStartY = e.touches[0].clientY;
-     }
-   }, { passive: true });
+  const scene = globe.scene();
+  scene.background = null;
+  globe.pointOfView({ lat: 30, lng: 15, altitude: 2.2 }, 0);
   let lastAlt = 2.2;
   function labelZoomLoop() {
     const pov = globe.pointOfView();
@@ -965,7 +941,6 @@ function cityJump(q) {
   }
 }
 function startLoops() {
-initMobileUI();  
 initWebSocket();   
 loadLiveStream();
 document.getElementById('stream-switch-btn').addEventListener('click',switchStream);
@@ -1195,41 +1170,3 @@ sheet.addEventListener("touchend", () => {
   }
 });
 document.addEventListener('DOMContentLoaded', runBoot);
-// ================= MOBILE UI =================
-function initMobileUI() {
-  console.log('[Mobile UI] Initialized');
-
-  // إنشاء زر القائمة
-  const menuBtn = document.createElement('button');
-  menuBtn.innerHTML = '☰';
-  menuBtn.className = 'mobile-menu-btn';
-  document.body.appendChild(menuBtn);
-
-  // إنشاء القائمة
-  const panel = document.createElement('div');
-  panel.className = 'mobile-panel';
-  panel.innerHTML = `
-    <div class="mobile-header">
-      <span>📡 Global Pulse</span>
-      <button id="close-mobile">✕</button>
-    </div>
-    <div class="mobile-content">
-      <button onclick="setView('live')">البث المباشر</button>
-      <button onclick="setView('timeline')">الزمن</button>
-      <button onclick="setView('analytics')">تحليل</button>
-      <button onclick="toggleAutoRotate()">تدوير الكرة</button>
-      <button onclick="toggleDensity()">وضع مضغوط</button>
-    </div>
-  `;
-  document.body.appendChild(panel);
-
-  // فتح القائمة
-  menuBtn.onclick = () => {
-    panel.classList.add('open');
-  };
-
-  // إغلاق القائمة
-  panel.querySelector('#close-mobile').onclick = () => {
-    panel.classList.remove('open');
-  };
-}
