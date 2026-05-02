@@ -1170,3 +1170,6 @@ sheet.addEventListener("touchend", () => {
   }
 });
 document.addEventListener('DOMContentLoaded', runBoot);
+if (window.innerWidth < 768) {
+  initMobileUI();
+}

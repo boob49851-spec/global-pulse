@@ -936,3 +936,42 @@ body{
   overflow-y: auto;
   height: 100%;
 }
+#mobile-app {
+  position: fixed;
+  inset: 0;
+  background: #0a0f14;
+  color: white;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.m-header {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  background: #111;
+}
+
+.m-map {
+  height: 40%;
+}
+
+.m-feed {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.m-tabs {
+  display: flex;
+  justify-content: space-around;
+  background: #111;
+}
+
+.m-tabs button {
+  flex: 1;
+  padding: 10px;
+  background: none;
+  color: white;
+  border: none;
+}
