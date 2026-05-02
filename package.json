@@ -1,24 +1,27 @@
 {
-"name":"global-pulse",
-"version":"1.0.0",
-"description":"Military OSINT Monitoring System",
-"main":"server.js",
-"engines":{
-"node":"18.x"
-},
-"scripts":{
-"start":"node server.js",
-"dev":"node server.js"
-},
-"keywords":["military","osint","news"],
-"author":"Hasheim",
-"license":"ISC",
-"dependencies":{
-"axios":"^1.6.0",
-"cors":"^2.8.5",
-"dotenv":"^16.3.1",
-"express":"^4.18.2",
-"rss-parser":"^3.13.0",
-"ws":"^8.14.2"
-}
+  "name": "global-pulse",
+  "version": "1.0.0",
+  "description": "Military OSINT Monitoring System — Real-time conflicts, geopolitics, and defense intelligence.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "military",
+    "osint",
+    "defense",
+    "geopolitics",
+    "monitoring"
+  ],
+  "author": "Hasheim",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.15.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "node-fetch": "^3.3.2",
+    "rss-parser": "^3.13.0",
+    "ws": "^8.20.0"
+  }
 }

@@ -2,73 +2,24 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes" />
+<meta name="theme-color" content="#4cc9f0" />
+<meta name="description" content="نظام مراقبة عسكري متقدم - تتبع الأحداث والنزاعات والأخبار العالمية" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Global Pulse" />
 <title>مرصد اخباري شامل — منصة المراقبة الإخبارية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+<link rel="apple-touch-icon" href="./logo.svg" />
+<link rel="manifest" href="./manifest.json" />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles-v2.css" />
-<link rel="icon" type="image/svg+xml" href="logo.svg" />
-<link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="#4cc9f0"/>
-<meta name="mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="مرصد اخباري"/>
-<meta name="application-name" content="مرصد اخباري"/>
-<meta name="msapplication-TileColor" content="#000000"/>
-<meta name="msapplication-tap-highlight" content="no"/>
+<link rel="stylesheet" href="styles-mobile.css" />
 </head>
 <body>
-<div class="mobile-app">
-
-  <!-- Header -->
-  <div class="m-header">
-    <div class="m-title">مرصد اخباري</div>
-    <div id="clock-mobile">00:00</div>
-  </div>
-
-  <!-- Globe -->
-  <div class="m-globe">
-    <div class="mobile-ui">
-
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <div class="logo">🌍 Global Pulse</div>
-    <input id="mobile-search" placeholder="ابحث..." />
-  </div>
-
-  <!-- Globe -->
-  <div id="globe-container">
-    <div id="globe"></div>
-  </div>
-
-  <!-- Bottom Sheet -->
-  <div id="bottom-sheet" class="sheet">
-    <div class="sheet-handle"></div>
-
-    <div class="sheet-content">
-      <!-- نفس الفيد القديم -->
-      <div class="feed-scroll"></div>
-    </div>
-  </div>
-
-</div>
-  </div>
-
-  <!-- Content -->
-  <div class="m-content" id="m-content"></div>
-
-  <!-- Bottom Tabs -->
-  <div class="m-tabs">
-    <button class="m-tab active" data-tab="feed">📡</button>
-    <button class="m-tab" data-tab="stats">📊</button>
-    <button class="m-tab" data-tab="settings">⚙️</button>
-  </div>
-
-</div>  
 <div id="breaking-bar" class="breaking-bar" style="display:none">
   🚨 BREAKING MILITARY EVENT
 </div>  
@@ -290,20 +241,23 @@
 </div>
 <script src="https://unpkg.com/globe.gl"></script>
 <script src="data.js"></script>
+<script src="mobile-nav.js"></script>
 <script src="app-v2.js"></script>
 <audio id="alert-critical" src="alert-critical.mp3" preload="auto"></audio>
 <audio id="alert-high" src="alert-high.mp3" preload="auto"></audio>
+
+<!-- Service Worker Registration -->
 <script>
-if('serviceWorker' in navigator){
-window.addEventListener('load',()=>{
-navigator.serviceWorker.register('/sw.js')
-.then((registration)=>{
-console.log('[SW] مسجل بنجاح:',registration.scope);
-})
-.catch((error)=>{
-console.log('[SW] فشل التسجيل:',error);
-});
-});
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        console.log('[PWA] Service Worker مسجل بنجاح:', reg);
+      })
+      .catch(err => {
+        console.warn('[PWA] خطأ في تسجيل Service Worker:', err);
+      });
+  });
 }
 </script>
 </body>

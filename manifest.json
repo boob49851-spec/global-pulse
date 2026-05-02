@@ -1,30 +1,74 @@
 {
-"name":"مرصد اخباري شامل",
-"short_name":"مرصد اخباري",
-"description":"منصة المراقبة الإخبارية العسكرية والجيوسياسية",
-"start_url":"/",
-"display":"standalone",
-"background_color":"#000000",
-"theme_color":"#4cc9f0",
-"orientation":"portrait-primary",
-"scope":"/",
-"lang":"ar",
-"dir":"rtl",
-"icons":[
-{"src":"/logo.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"},
-{"src":"/logo.svg","sizes":"192x192","type":"image/svg+xml","purpose":"any"},
-{"src":"/logo.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}
-],
-"screenshots":[
-{"src":"/logo.svg","sizes":"1280x720","type":"image/svg+xml","form_factor":"wide"},
-{"src":"/logo.svg","sizes":"390x844","type":"image/svg+xml","form_factor":"narrow"}
-],
-"categories":["news","military","geopolitics"],
-"prefer_related_applications":false,
-"related_applications":[],
-"shortcuts":[
-{"name":"الأخبار المباشرة","short_name":"مباشر","description":"عرض الأخبار المباشرة","url":"/?view=live","icons":[{"src":"/logo.svg","sizes":"any"}]},
-{"name":"التحليلات","short_name":"تحليل","description":"عرض التحليلات","url":"/?view=analytics","icons":[{"src":"/logo.svg","sizes":"any"}]}
-],
-"display_override":["standalone","minimal-ui","browser"]
+  "name": "مرصد اخباري شامل - Global Pulse",
+  "short_name": "Global Pulse",
+  "description": "نظام مراقبة عسكري متقدم - تتبع الأحداث والنزاعات والأخبار العالمية",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#02040a",
+  "theme_color": "#4cc9f0",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23020410' width='192' height='192'/><circle cx='96' cy='96' r='80' fill='none' stroke='%234cc9f0' stroke-width='2'/><circle cx='96' cy='96' r='60' fill='none' stroke='%23b565ff' stroke-width='1.5' opacity='0.7'/><circle cx='96' cy='96' r='40' fill='none' stroke='%23ffbc42' stroke-width='1' opacity='0.5'/><circle cx='96' cy='96' r='20' fill='%234cc9f0'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23020410' width='512' height='512'/><circle cx='256' cy='256' r='200' fill='none' stroke='%234cc9f0' stroke-width='4'/><circle cx='256' cy='256' r='150' fill='none' stroke='%23b565ff' stroke-width='3' opacity='0.7'/><circle cx='256' cy='256' r='100' fill='none' stroke='%23ffbc42' stroke-width='2' opacity='0.5'/><circle cx='256' cy='256' r='50' fill='%234cc9f0'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23020410' width='540' height='720'/><text x='270' y='360' font-size='48' fill='%234cc9f0' text-anchor='middle' dominant-baseline='middle'>Global Pulse</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["news", "productivity"],
+  "shortcuts": [
+    {
+      "name": "الخريطة المباشرة",
+      "short_name": "الخريطة",
+      "description": "عرض الخريطة المباشرة للأحداث العالمية",
+      "url": "/?view=live",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%234cc9f0' width='96' height='96'/><circle cx='48' cy='48' r='30' fill='%23020410'/></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "الأخبار المباشرة",
+      "short_name": "الأخبار",
+      "description": "عرض البث المباشر للأخبار",
+      "url": "/?view=feed",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%2306d6a0' width='96' height='96'/><rect x='12' y='24' width='72' height='12' fill='%23020410'/><rect x='12' y='42' width='72' height='12' fill='%23020410'/><rect x='12' y='60' width='72' height='12' fill='%23020410'/></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }

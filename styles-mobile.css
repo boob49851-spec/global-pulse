@@ -1,0 +1,755 @@
+/* Mobile-First Responsive Enhancements for Global Pulse */
+
+/* ============================================================================
+   MOBILE NAVIGATION BAR (Bottom Navigation)
+   ============================================================================ */
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: rgba(10, 16, 30, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(120, 180, 255, 0.12);
+  z-index: 130;
+  flex-direction: row-reverse;
+  align-items: stretch;
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+  color: var(--ink-ghost);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 0;
+  position: relative;
+}
+
+.mobile-nav-item:active,
+.mobile-nav-item.active {
+  color: var(--cyan);
+  background: rgba(76, 201, 240, 0.08);
+}
+
+.mobile-nav-item::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.mobile-nav-item.nav-map::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>');
+}
+
+.mobile-nav-item.nav-feed::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 8h16M4 12h16M4 16h16"/></svg>');
+}
+
+.mobile-nav-item.nav-timeline::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>');
+}
+
+.mobile-nav-item.nav-analytics::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 4-4"/></svg>');
+}
+
+.mobile-nav-item.nav-menu::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>');
+}
+
+/* ============================================================================
+   MOBILE MENU DRAWER
+   ============================================================================ */
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  max-width: 320px;
+  height: 100vh;
+  background: rgba(10, 16, 30, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 140;
+  transition: right 0.3s ease;
+  flex-direction: column;
+  overflow-y: auto;
+  border-left: 1px solid rgba(120, 180, 255, 0.12);
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 135;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.mobile-menu.open ~ .mobile-menu-overlay {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-menu-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(120, 180, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  color: var(--ink);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-section {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(120, 180, 255, 0.12);
+}
+
+.mobile-menu-section:last-child {
+  border-bottom: none;
+}
+
+.mobile-menu-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--ink-ghost);
+  text-transform: uppercase;
+  padding: 12px 16px;
+  margin: 0;
+}
+
+.mobile-menu-item {
+  padding: 12px 16px;
+  color: var(--ink-dim);
+  font-family: var(--body);
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.mobile-menu-item:active,
+.mobile-menu-item:hover {
+  background: rgba(76, 201, 240, 0.08);
+  color: var(--cyan);
+}
+
+/* ============================================================================
+   MOBILE PANEL ADJUSTMENTS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  :root {
+    --rail-l: 0;
+    --rail-r: 0;
+    --toolbar-h: 50px;
+    --top-chrome-h: 56px;
+  }
+
+  /* Show mobile navigation */
+  .mobile-nav {
+    display: flex;
+  }
+
+  /* Adjust main layout for mobile */
+  body {
+    padding-bottom: 60px;
+  }
+
+  /* Hide desktop elements */
+  .rail-l,
+  .rail-r,
+  .detail,
+  .hint {
+    display: none !important;
+  }
+
+  /* Adjust toolbar for mobile */
+  .toolbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .toolbar-section {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 4px 0;
+  }
+
+  .toolbar-section.tabs {
+    width: 100%;
+    order: 1;
+  }
+
+  .toolbar-section.filters {
+    width: 100%;
+    order: 2;
+    display: none;
+  }
+
+  .toolbar-section.search-section {
+    width: 100%;
+    order: 3;
+  }
+
+  .toolbar-section.tools {
+    width: 100%;
+    order: 4;
+    display: none;
+  }
+
+  .toolbar-spacer {
+    display: none;
+  }
+
+  /* Tab styling for mobile */
+  .tab {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tab .n {
+    display: none;
+  }
+
+  /* Search styling for mobile */
+  .tsearch {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  .tsearch input {
+    font-size: 14px;
+    padding: 10px 12px;
+    min-height: 40px;
+  }
+
+  /* Top chrome adjustments */
+  .top-chrome {
+    top: 8px !important;
+    right: 8px !important;
+    left: 8px !important;
+    gap: 8px !important;
+    flex-wrap: wrap;
+  }
+
+  .logo-card {
+    min-width: auto !important;
+    padding: 8px 12px !important;
+    gap: 8px !important;
+  }
+
+  .logo-text .brand {
+    font-size: 14px !important;
+    white-space: normal;
+  }
+
+  .logo-text .sub {
+    display: none;
+  }
+
+  .stats-bar {
+    display: none !important;
+  }
+
+  /* Panel adjustments */
+  .panel {
+    border-radius: 4px;
+  }
+
+  .panel-head {
+    padding: 10px 12px;
+  }
+
+  .panel-head h3 {
+    font-size: 10px;
+  }
+
+  .panel-head .meta {
+    font-size: 8px;
+  }
+
+  /* Feed panel for mobile */
+  .feed-panel {
+    position: fixed;
+    inset: 56px 0 60px 0;
+    width: 100%;
+    border-radius: 0;
+    z-index: 50;
+  }
+
+  .feed-scroll {
+    max-height: calc(100vh - 116px - 60px);
+  }
+
+  /* Stream panel for mobile */
+  .stream-panel {
+    position: fixed;
+    inset: 56px 0 60px 0;
+    width: 100%;
+    border-radius: 0;
+    z-index: 50;
+    display: none;
+  }
+
+  .stream-panel.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stream-body {
+    flex: 1;
+  }
+
+  /* Detail panel for mobile */
+  .detail {
+    position: fixed !important;
+    inset: 56px 0 60px 0 !important;
+    width: 100% !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 60;
+    border-radius: 0;
+    transform: translateY(100%);
+    opacity: 1;
+    pointer-events: auto;
+    transition: transform 0.3s ease;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .detail.show {
+    transform: translateY(0);
+  }
+
+  /* Ticker adjustments */
+  .ticker {
+    height: 60px;
+    bottom: 0;
+    padding: 8px;
+  }
+
+  .ticker-label {
+    flex-shrink: 0;
+    padding: 0 8px;
+    font-size: 8px;
+  }
+
+  .ticker-right {
+    display: none;
+  }
+
+  /* Button sizing for mobile */
+  button {
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+  .tbtn {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+  }
+
+  .clear-feed-btn,
+  .export-feed-btn,
+  .keyword-search-btn,
+  .keyword-clear-btn,
+  .stream-switch-btn {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    min-height: 36px;
+  }
+
+  /* Input sizing for mobile */
+  input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 10px 12px;
+    min-height: 40px;
+  }
+
+  /* Feed items for mobile */
+  .feed-item {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .feed-item-title {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .feed-item-meta {
+    font-size: 11px;
+  }
+
+  /* Category list for mobile */
+  .cat-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .cat-item {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  /* Threat panel for mobile */
+  .threat-panel {
+    padding: 12px;
+  }
+
+  .threat-bar {
+    height: 20px;
+    margin-bottom: 8px;
+  }
+
+  .threat-seg {
+    height: 100%;
+  }
+
+  /* Watchlist for mobile */
+  .watchlist {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .watchlist-item {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  /* Breaking bar */
+  .breaking-bar {
+    padding: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  /* Vignette and effects */
+  .vignette,
+  .grid-overlay {
+    display: none;
+  }
+
+  /* Scanlines - reduce for mobile */
+  .scanlines {
+    opacity: 0.1;
+  }
+
+  /* Globe adjustments */
+  #globe {
+    width: 100%;
+    height: 100%;
+  }
+
+  .globe-wrap {
+    top: 56px;
+    bottom: 60px;
+  }
+
+  /* Touch-friendly adjustments */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a,
+  input {
+    -webkit-touch-callout: none;
+  }
+
+  /* Prevent horizontal scroll */
+  body,
+  html {
+    overflow-x: hidden;
+  }
+
+  /* Adjust font sizes for readability */
+  body {
+    font-size: 14px;
+  }
+
+  .mono {
+    font-size: 11px;
+  }
+
+  .display {
+    font-size: 16px;
+  }
+}
+
+/* ============================================================================
+   TABLET ADJUSTMENTS (768px - 1024px)
+   ============================================================================ */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --rail-l: 180px;
+    --rail-r: 280px;
+  }
+
+  .mobile-nav {
+    display: none;
+  }
+
+  .rail-l,
+  .rail-r {
+    display: flex !important;
+  }
+
+  .detail {
+    display: block !important;
+  }
+
+  .toolbar-section.search-section {
+    display: flex;
+  }
+
+  .toolbar-section.tools {
+    display: flex;
+  }
+
+  .stats-bar {
+    display: flex !important;
+  }
+
+  .stat {
+    min-width: 100px;
+    padding: 8px 12px;
+  }
+
+  .stat .val {
+    font-size: 14px;
+  }
+
+  .tab .n {
+    display: inline;
+  }
+
+  .tsearch {
+    width: 150px !important;
+  }
+
+  .logo-card {
+    min-width: 220px !important;
+  }
+}
+
+/* ============================================================================
+   LANDSCAPE MODE (Mobile)
+   ============================================================================ */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .mobile-nav {
+    height: 50px;
+  }
+
+  body {
+    padding-bottom: 50px;
+  }
+
+  .toolbar {
+    height: auto;
+    padding: 4px;
+  }
+
+  .top-chrome {
+    top: 4px !important;
+    gap: 4px !important;
+  }
+
+  .logo-card {
+    padding: 6px 10px !important;
+  }
+
+  .logo-text .brand {
+    font-size: 12px !important;
+  }
+
+  .ticker {
+    height: 50px;
+  }
+
+  .feed-panel,
+  .stream-panel,
+  .detail {
+    inset: 40px 0 50px 0 !important;
+  }
+}
+
+/* ============================================================================
+   VERY SMALL SCREENS (< 360px)
+   ============================================================================ */
+
+@media (max-width: 359px) {
+  .logo-text .brand {
+    font-size: 12px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-mark .logo-image {
+    width: 24px;
+    height: 24px;
+  }
+
+  .tab {
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .tbtn {
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .panel-head h3 {
+    font-size: 9px;
+  }
+
+  .feed-item {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .mobile-nav-item {
+    font-size: 8px;
+  }
+
+  .mobile-nav-item::before {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ============================================================================
+   LARGE SCREENS (> 1440px)
+   ============================================================================ */
+
+@media (min-width: 1441px) {
+  :root {
+    --rail-l: 260px;
+    --rail-r: 400px;
+  }
+
+  .rail-r {
+    width: var(--rail-r);
+  }
+
+  .detail {
+    width: 460px;
+    right: calc(var(--rail-l) + 36px);
+  }
+
+  .tsearch {
+    width: 200px !important;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY & PERFORMANCE
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Already dark theme, no changes needed */
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+  .mobile-nav,
+  .toolbar,
+  .top-chrome,
+  .ticker,
+  .hint,
+  .breaking-bar,
+  .scanlines,
+  .vignette,
+  .grid-overlay {
+    display: none !important;
+  }
+
+  body {
+    padding: 0;
+    background: white;
+    color: black;
+  }
+
+  .panel {
+    background: white;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+}

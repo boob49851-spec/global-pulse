@@ -1,43 +1,34 @@
-require('dotenv').config()
 const express=require("express")
 const cors=require("cors")
 const Parser=require("rss-parser")
-const axios=require('axios')
-const http=require('http')
-const WebSocket=require('ws')
+const fetch=require("node-fetch")
 const app=express()
-const server=http.createServer(app)
-const wss=new WebSocket.Server({noServer:true})
-const PORT=process.env.PORT||3000
-const GNEWS_KEY=process.env.GNEWS_API_KEY||"8f0a8e4c4a7be6265898d40f8c7e54d3"
-let connectedClients=[]
+const WebSocket=require('ws');
+const wss=new WebSocket.Server({noServer:true});
+let connectedClients=[];
 wss.on('connection',(ws)=>{
-connectedClients.push(ws)
-console.log(`[WebSocket] عميل جديد - العملاء: ${connectedClients.length}`)
+connectedClients.push(ws);
+console.log(`[WebSocket] عميل جديد متصل - العملاء: ${connectedClients.length}`);
 ws.on('close',()=>{
-connectedClients=connectedClients.filter(c=>c!==ws)
-console.log(`[WebSocket] قطع اتصال - المتبقون: ${connectedClients.length}`)
-})
+connectedClients=connectedClients.filter(c=>c!==ws);
+console.log(`[WebSocket] عميل قطع الاتصال - العملاء المتبقية: ${connectedClients.length}`);
+});
 ws.on('error',(err)=>{
-console.error('[WebSocket] خطأ:',err.message)
-})
-})
+console.error('[WebSocket] خطأ:',err.message);
+});
+});
 function broadcastNews(articles){
-const message=JSON.stringify({type:'news-update',data:articles})
+const message=JSON.stringify({type:'news-update',data:articles});
 connectedClients.forEach(client=>{
 if(client.readyState===WebSocket.OPEN){
-client.send(message)
+client.send(message);
 }
-})
+});
 }
-app.use(cors({
-origin:'*',
-methods:['GET','POST','OPTIONS'],
-allowedHeaders:['Content-Type','Authorization']
-}))
-app.use(express.json())
+app.use(cors())
 app.use(express.static(__dirname))
 const parser=new Parser()
+const GNEWS_KEY="8f0a8e4c4a7be6265898d40f8c7e54d3"
 const rssSources=[
 "https://www.defensenews.com/arc/outboundfeeds/rss/",
 "https://www.militarytimes.com/arc/outboundfeeds/rss/",
@@ -68,7 +59,8 @@ if(score>=4)return"HIGH"
 if(score>=2)return"ELEVATED"
 return"LOW"
 }
-const postCache={}
+const TelegramRssUrl=(channel)=>`https://t.me/s/${channel}`;
+const postCache={};
 const latestKnownIds={
 'ynetalerts':59786,'fireisrael7777':436575,'orelabramov':3248,'orelabramov1':4347,
 'lelotsenzura':91021,'israelcenzura':521643,'newsonlineils':81641,'NeWSnOw247':125225,
@@ -91,22 +83,25 @@ const latestKnownIds={
 'southfronteng':60033,'AMK_Mapping':28941,'conflictshots':3945,'MilitaryNewsEN':36619,
 'vestyisrael':170025,'NEWSruIsrael':109600,'JewishBreakingNewsTelegram':17377,'IsraeliDefence':41458,
 'Israel_Hamas_2023':38097,'YEMEN_NEWS_21':206687,'SmiiLee_15':20812,'SmiiLee_13':20812,'ourwarstoday':44379
-}
+};
 const channelList=[
 'ynetalerts','fireisrael7777','orelabramov','orelabramov1','lelotsenzura','israelcenzura','newsonlineils','NeWSnOw247','Mivzakeybitachon2225','hotnews1','mdaisrael','Realtimesecurity1','raknetooooo','rakhadashot','ramreports','merkaz','US2020US','Intellinews','israel_yamin','kolisrael','GLOBAL_Telegram_MOKED','AviationNewsIL','NewsArmy','inon_yttach','flashnewsssss','News_cabinet_news','News_il_h','ziv710','newslivelverified','koahadasotbatelegram','israelhayomofficial','NTD_Hebrew','secrets_news1','IL_News2','firstreportsnews','AANewsil','BackYardOfficial_tg','israel_9','mignewscom','stranacoil','idfofficial','RocketAlert1','presstv','OSINTdefender','Middle_East_Spectator','IranIntl_En','alertisrael','QudsNen','timesofisraelpersian','farsnaEn','FotrosResistancee','Alsaa_plus_EN','WarfareAnalysis','rnintel','GeoPWatch','thecradlemedia','hamaswinner','TasnimNewsEN','abualiexpress','dropsitenews','France24_en','SaberinFa','defapress_ir','sepah','wamnews_en','gulfnewsUAE','Alibk3','aljazeeraglobal','bintjbeilnews','rybar','intelslava','ClashReport','DDGeopolitics','militarywave','militarysummary','southfronteng','AMK_Mapping','conflictshots','MilitaryNewsEN','vestyisrael','NEWSruIsrael','JewishBreakingNewsTelegram','IsraeliDefence','Israel_Hamas_2023','YEMEN_NEWS_21','SmiiLee_15','SmiiLee_13','ourwarstoday'
-]
+];
+const axios=require('axios');
 async function fetchPost(channel,postId){
-const cacheKey=`${channel}/${postId}`
-if(postCache[cacheKey]!==undefined)return postCache[cacheKey]
+const cacheKey=`${channel}/${postId}`;
+if(postCache[cacheKey]!==undefined) return postCache[cacheKey];
 try{
-await new Promise(resolve=>setTimeout(resolve,Math.random()*2000+1000))
+await new Promise(resolve=>setTimeout(resolve,Math.random()*2000+1000));
 const res=await axios.get(`https://t.me/${channel}/${postId}?embed=1&mode=tme`,{
-headers:{'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'},
+headers:{
+'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+},
 timeout:15000
-})
-const html=res.data
-const textMatch=html.match(/<div class="tgme_widget_message_text[^>]*>(.*?)<\/div>/s)
-if(!textMatch){postCache[cacheKey]=null;return null}
+});
+const html=res.data;
+const textMatch=html.match(/<div class="tgme_widget_message_text[^>]*>(.*?)<\/div>/s);
+if(!textMatch){postCache[cacheKey]=null;return null;}
 let text=textMatch[1]
 .replace(/<br\s*\/?>/gi,' ')
 .replace(/<[^>]+>/g,'')
@@ -117,56 +112,58 @@ let text=textMatch[1]
 .replace(/&#39;/g,"'")
 .replace(/&#036;/g,'$')
 .replace(/\s+/g,' ')
-.trim()
-const dateMatch=html.match(/<time[^>]*datetime="([^"]+)"/)
-const date=dateMatch?dateMatch[1]:new Date().toISOString()
-if(!text){postCache[cacheKey]=null;return null}
-const result={text,date}
-postCache[cacheKey]=result
-console.log(`✓ Telegram: ${channel}/${postId}`)
-return result
+.trim();
+const dateMatch=html.match(/<time[^>]*datetime="([^"]+)"/);
+const date=dateMatch?dateMatch[1]:new Date().toISOString();
+if(!text){postCache[cacheKey]=null;return null;}
+const result={text,date};
+postCache[cacheKey]=result;
+console.log(`✓ Telegram: ${channel}/${postId}`);
+return result;
 }catch(e){
-console.log(`✗ Telegram: ${channel}/${postId} - ${e.message}`)
-postCache[cacheKey]=null
-return null
+console.log(`✗ Telegram: ${channel}/${postId} - ${e.message}`);
+postCache[cacheKey]=null;
+return null;
 }
 }
 async function findLatestPostId(channel){
-const knownId=latestKnownIds[channel]||1000
-let searchId=knownId
-const JUMP_SIZES=[1000,500,100,50,20]
+const knownId=latestKnownIds[channel]||1000;
+let searchId=knownId;
+const JUMP_SIZES=[1000,500,100,50,20];
 for(const jump of JUMP_SIZES){
-let foundHigher=false
+let foundHigher=false;
 for(let i=0;i<3;i++){
-const testId=searchId+jump
-const result=await fetchPost(channel,testId)
+const testId=searchId+jump;
+const result=await fetchPost(channel,testId);
 if(result){
-searchId=testId
-foundHigher=true
-latestKnownIds[channel]=searchId
-}else{break}
+searchId=testId;
+foundHigher=true;
+latestKnownIds[channel]=searchId;
+}else{break;}
 }
-if(!foundHigher)break
+if(!foundHigher) break;
 }
-let latest=searchId
+let latest=searchId;
 for(let i=1;i<=20;i++){
-const result=await fetchPost(channel,searchId+i)
+const result=await fetchPost(channel,searchId+i);
 if(result){
-latest=searchId+i
-latestKnownIds[channel]=latest
-}else{break}
+latest=searchId+i;
+latestKnownIds[channel]=latest;
+}else{break;}
 }
-return latest
+return latest;
 }
 async function fetchTelegramNews(){
-const telegramArticles=[]
+const telegramArticles=[];
 const channelResults=await Promise.allSettled(
 channelList.map(async(channel)=>{
 try{
-const latestId=await findLatestPostId(channel)
-const ids=[latestId,latestId-1,latestId-2].filter(id=>id>0)
-const results=await Promise.allSettled(ids.map(id=>fetchPost(channel,id)))
-const posts=[]
+const latestId=await findLatestPostId(channel);
+const posts=[];
+const ids=[latestId,latestId-1,latestId-2].filter(id=>id>0);
+const results=await Promise.allSettled(
+ids.map(id=>fetchPost(channel,id))
+);
 results.forEach((r,i)=>{
 if(r.status==='fulfilled'&&r.value){
 posts.push({
@@ -178,32 +175,28 @@ source:{name:`Telegram - ${channel}`},
 publishedAt:r.value.date||new Date().toISOString(),
 image:null,
 gnewsCategory:'world'
-})
+});
 }
-})
-return posts
+});
+return posts;
 }catch(err){
-console.error(`[Telegram] خطأ في ${channel}:`,err.message)
-return[]
+console.error(`[Telegram] خطأ في ${channel}:`,err.message);
+return [];
 }
 })
-)
+);
 for(const result of channelResults){
 if(result.status==='fulfilled'){
-telegramArticles.push(...result.value)
+telegramArticles.push(...result.value);
 }
 }
-console.log(`[Telegram] جلب ${telegramArticles.length} منشور`)
-return telegramArticles
+console.log(`[Telegram] جلب ${telegramArticles.length} منشور`);
+return telegramArticles;
 }
 app.get("/api/news",async(req,res)=>{
-let articles=[]
-try{
-const telegramNews=await fetchTelegramNews()
-articles=[...telegramNews]
-}catch(e){
-console.error('[Telegram] خطأ عام:',e.message)
-}
+let articles=[];
+const telegramNews=await fetchTelegramNews();
+articles=[...telegramNews];
 for(const url of rssSources){
 try{
 const feed=await parser.parseURL(url)
@@ -212,17 +205,13 @@ const threat=analyzeThreat(item.title+" "+(item.contentSnippet||""))
 articles.push({
 title:item.title,
 summary:item.contentSnippet||"",
-description:item.contentSnippet||"",
 url:item.link,
-source:{name:feed.title||"RSS"},
+source:feed.title,
 threat:threat,
-publishedAt:item.pubDate||new Date().toISOString(),
-gnewsCategory:'world'
+date:item.pubDate
 })
 })
-}catch(e){
-console.error('[RSS] خطأ:',url,e.message)
-}
+}catch(e){}
 }
 try{
 const queries=[
@@ -234,72 +223,56 @@ const queries=[
 "oil crisis OR trade war OR military buildup"
 ]
 for(const q of queries){
-try{
-const gnewsRes=await axios.get(`https://gnews.io/api/v4/search`,{
-params:{
-q:q,
-lang:'en',
-max:20,
-apikey:GNEWS_KEY
-},
-timeout:10000
-})
-const data=gnewsRes.data
+const gnews=await fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}&lang=en&max=20&apikey=${GNEWS_KEY}`)
+const data=await gnews.json()
 if(data.articles){
 data.articles.forEach(a=>{
 const threat=analyzeThreat(a.title+" "+(a.description||""))
 articles.push({
 title:a.title,
 summary:a.description||"",
-description:a.description||"",
 url:a.url,
-source:{name:a.source?.name||"GNews"},
+source:a.source.name,
 threat:threat,
-publishedAt:a.publishedAt||new Date().toISOString(),
-gnewsCategory:'world'
+date:a.publishedAt
 })
 })
 }
-}catch(e){
-console.error('[GNews] خطأ في query:',q,e.message)
 }
+const data=await gnews.json()
+if(data.articles){
+data.articles.forEach(a=>{
+const threat=analyzeThreat(a.title+" "+(a.description||""))
+articles.push({
+title:a.title,
+summary:a.description||"",
+url:a.url,
+source:a.source.name,
+threat:threat,
+date:a.publishedAt
+})
+})
 }
-}catch(e){
-console.error('[GNews] خطأ عام:',e.message)
-}
+}catch(e){}
 const seen=new Set()
 articles=articles.filter(a=>{
-if(!a.title)return false
 if(seen.has(a.title))return false
 seen.add(a.title)
 return true
 })
-articles.sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt))
-broadcastNews(articles)
+articles.sort((a,b)=>new Date(b.date)-new Date(a.date))
+broadcastNews(articles);
 res.json(articles)
 })
-app.get('/health',(req,res)=>{
-res.json({status:'ok',clients:connectedClients.length,time:new Date().toISOString()})
-})
-app.get('*',(req,res)=>{
-res.sendFile(__dirname+'/index.html')
-})
+setInterval(async()=>{
+const freshTg=await fetchTelegramNews();
+},60000);
+const http=require('http');
+const server=http.createServer(app);
 server.on('upgrade',(request,socket,head)=>{
 wss.handleUpgrade(request,socket,head,(ws)=>{
-wss.emit('connection',ws,request)
-})
-})
-setInterval(async()=>{
-try{
-const freshTg=await fetchTelegramNews()
-if(freshTg.length>0){
-broadcastNews(freshTg)
-}
-}catch(e){
-console.error('[Interval] خطأ:',e.message)
-}
-},60000)
-server.listen(PORT,()=>{
-console.log(`[Server] يعمل على المنفذ ${PORT}`)
-console.log(`[WebSocket] جاهز`)
-})
+wss.emit('connection',ws,request);
+});
+});
+server.listen(3000,()=>console.log("Server running on http://localhost:3000 [WebSocket enabled]"));
+app.listen(3000,()=>console.log("Server running on http://localhost:3000"))

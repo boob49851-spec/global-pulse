@@ -85,9 +85,8 @@ loadLiveStream();
 }
 function initWebSocket(){
 try{
-const WS_URL = "wss://global-pulse-vc0l.onrender.com";
-
-wsConnection = new WebSocket(WS_URL);
+const protocol=window.location.protocol==='https:'?'wss:':'ws:';
+wsConnection=new WebSocket(`${protocol}//${window.location.host}`);
 wsConnection.addEventListener('open',()=>{
 console.log('[WebSocket] متصل بالسيرفر');
 });
@@ -337,8 +336,7 @@ const bootLines = [
 ];
 async function fetchMilitaryNews() {
   try {
-    const API_BASE=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:3000':`${window.location.protocol}//${window.location.host}`;
-    const response=await fetch(`${API_BASE}/api/news`);
+    const response = await fetch("http://127.0.0.1:3000/api/news");
     if (!response.ok) return [];
     const data = await response.json();
     return data;
@@ -1024,28 +1022,43 @@ document.querySelector('.csv-btn').addEventListener('click',exportToCSV);
   });
 }
 function showNewsNotification(event){
-
-  if (Notification.permission !== "granted") return;
-
-  const options = {
-    body: event.sum.substring(0,100),
-    icon: "./logo.svg",
-    badge: "./logo.svg",
-    tag: event.threat === "CRITICAL" ? "critical-alert" : `notification-${event.id}`
-  };
-
-  const notification = new Notification(
-    `🔔 ${event.cat.toUpperCase()} - ${event.source}`,
-    options
-  );
-
-  notification.onclick = () => {
-    window.focus();
-    window.open(event.url, '_blank');
-    notification.close();
-  };
-
-  setTimeout(() => notification.close(), 10000);
+if(Notification.permission!=="granted") return;
+const options={
+body:event.sum.substring(0,100),
+icon:"./logo.svg",
+badge:"./logo.svg",
+tag:`notification-${event.id}`,
+requireInteraction:true,
+actions:[
+{action:'open',title:'فتح المصدر'},
+{action:'close',title:'إغلاق'}
+],
+data:{
+url:event.url,
+title:event.title,
+category:event.cat,
+threat:event.threat
+}
+};
+if(event.threat==="CRITICAL"){
+options.tag='critical-alert';
+options.requireInteraction=true;
+options.badge="./logo.svg";
+}
+const notification=new Notification(`🔔 ${event.cat.toUpperCase()} - ${event.source}`,options);
+notification.addEventListener('click',(e)=>{
+if(e.action==='open'||!e.action){
+window.focus();
+window.open(event.url,'_blank');
+notification.close();
+}else if(e.action==='close'){
+notification.close();
+}
+});
+notification.addEventListener('close',()=>{
+console.log('[Notification] تم إغلاق الإشعار');
+});
+setTimeout(()=>notification.close(),10000);
 }
 function updateGlobalThreatLevel(){
 const el=document.getElementById("global-threat");
@@ -1139,34 +1152,4 @@ a.click();
 URL.revokeObjectURL(url);
 console.log('[Export] تم تصدير CSV - '+events.length+' حدث');
 }
-const sheet = document.getElementById("bottom-sheet");
-
-let startY = 0;
-let currentY = 0;
-let isDragging = false;
-
-sheet.addEventListener("touchstart", (e) => {
-  startY = e.touches[0].clientY;
-  isDragging = true;
-});
-
-sheet.addEventListener("touchmove", (e) => {
-  if (!isDragging) return;
-  currentY = e.touches[0].clientY;
-  const diff = currentY - startY;
-
-  if (diff > 0) {
-    sheet.style.transform = `translateY(${diff}px)`;
-  }
-});
-
-sheet.addEventListener("touchend", () => {
-  isDragging = false;
-
-  if (currentY - startY > 100) {
-    sheet.classList.remove("open");
-  } else {
-    sheet.classList.add("open");
-  }
-});
 document.addEventListener('DOMContentLoaded', runBoot);
