@@ -1255,5 +1255,13 @@ function startMobileFeedUpdates() {
   renderMobileFeed();
 }
 document.addEventListener('DOMContentLoaded', function() {
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    const mobileElements = document.querySelectorAll('.app-header, .bottom-nav, .mobile-panel');
+    mobileElements.forEach(el => el.style.removeProperty('display'));
+  } else {
+    const desktopElements = document.querySelectorAll('.top-chrome, .toolbar, .rail-l, .rail-r, .detail, .hint, .ticker');
+    desktopElements.forEach(el => el.style.removeProperty('display'));
+  }
   runBoot();
 });

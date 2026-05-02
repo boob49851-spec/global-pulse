@@ -766,7 +766,7 @@ color:#ffcc00;
   
   /* Mobile App Container */
   .app-container {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     height: 100vh;
     height: calc(var(--vh, 1vh) * 100);
@@ -774,10 +774,6 @@ color:#ffcc00;
     color: var(--ink);
     font-family: var(--body);
     overflow: hidden;
-  }
-  
-  .mobile-hidden {
-    display: none;
   }
   
   /* Globe Container */
