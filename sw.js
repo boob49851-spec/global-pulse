@@ -1,4 +1,4 @@
-const CACHE_NAME='global-pulse-v1.0.0';
+const CACHE_NAME='global-pulse-v1.0.1';
 const urlsToCache=[
 '/',
 '/index.html',
@@ -8,7 +8,10 @@ const urlsToCache=[
 '/logo.svg',
 '/alert-critical.mp3',
 '/alert-high.mp3',
-'/manifest.json'
+'/manifest.json',
+'https://unpkg.com/globe.gl',
+'https://fonts.googleapis.com',
+'https://fonts.gstatic.com'
 ];
 self.addEventListener('install',(event)=>{
 event.waitUntil(

@@ -564,10 +564,33 @@ function initGlobe() {
     requestAnimationFrame(labelZoomLoop);
   }
   requestAnimationFrame(labelZoomLoop);
-  window.addEventListener('resize', () => {
-    globe.width(el.clientWidth);
-    globe.height(el.clientHeight);
-  });
+window.addEventListener('resize', () => {
+   globe.width(el.clientWidth);
+   globe.height(el.clientHeight);
+ });
+ let touchStartX = 0;
+ let touchStartY = 0;
+ let touchEndX = 0;
+ let touchEndY = 0;
+ function handleTouchStart(e) {
+   touchStartX = e.touches[0].clientX;
+   touchStartY = e.touches[0].clientY;
+ }
+ function handleTouchMove(e) {
+   if (!globe) return;
+   const deltaX = e.touches[0].clientX - touchStartX;
+   const deltaY = e.touches[0].clientY - touchStartY;
+   if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+     e.preventDefault();
+   }
+ }
+ function handleTouchEnd(e) {
+   touchEndX = e.changedTouches[0].clientX;
+   touchEndY = e.changedTouches[0].clientY;
+ }
+ el.addEventListener('touchstart', handleTouchStart, { passive: true });
+ el.addEventListener('touchmove', handleTouchMove, { passive: false });
+ el.addEventListener('touchend', handleTouchEnd, { passive: true });
 }
 function tooltipHtml(d) {
   return `
