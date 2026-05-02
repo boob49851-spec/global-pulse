@@ -2,128 +2,105 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="theme-color" content="#02040a" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="format-detection" content="telephone=no" />
-<title>مرصد اخباري شامل</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مرصد اخباري شامل — منصة المراقبة الإخبارية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="icon" type="image/svg+xml" href="./logo.svg" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles-v2.css" />
 <link rel="icon" type="image/svg+xml" href="logo.svg" />
 <link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#4cc9f0"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="مرصد اخباري"/>
+<meta name="application-name" content="مرصد اخباري"/>
+<meta name="msapplication-TileColor" content="#000000"/>
+<meta name="msapplication-tap-highlight" content="no"/>
 </head>
 <body>
+<div class="mobile-app">
+
+  <!-- Header -->
+  <div class="m-header">
+    <div class="m-title">مرصد اخباري</div>
+    <div id="clock-mobile">00:00</div>
+  </div>
+
+  <!-- Globe -->
+  <div class="m-globe">
+    <div class="mobile-ui">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="logo">🌍 Global Pulse</div>
+    <input id="mobile-search" placeholder="ابحث..." />
+  </div>
+
+  <!-- Globe -->
+  <div id="globe-container">
+    <div id="globe"></div>
+  </div>
+
+  <!-- Bottom Sheet -->
+  <div id="bottom-sheet" class="sheet">
+    <div class="sheet-handle"></div>
+
+    <div class="sheet-content">
+      <!-- نفس الفيد القديم -->
+      <div class="feed-scroll"></div>
+    </div>
+  </div>
+
+</div>
+  </div>
+
+  <!-- Content -->
+  <div class="m-content" id="m-content"></div>
+
+  <!-- Bottom Tabs -->
+  <div class="m-tabs">
+    <button class="m-tab active" data-tab="feed">📡</button>
+    <button class="m-tab" data-tab="stats">📊</button>
+    <button class="m-tab" data-tab="settings">⚙️</button>
+  </div>
+
+</div>  
+<div id="breaking-bar" class="breaking-bar" style="display:none">
+  🚨 BREAKING MILITARY EVENT
+</div>  
 <div class="boot">
-  <div class="boot-logo"><img src="./logo.svg" class="boot-bird" /></div>
-  <div class="boot-brand">مرصد اخباري شامل</div>
+  <div class="boot-logo">
+    <img src="./logo.svg" class="boot-bird" />
+  </div>
+  <div class="boot-brand">
+      مرصد اخباري شامل
+  </div>
   <div class="boot-progress"><div class="boot-progress-bar"></div></div>
   <div class="boot-log">› جاري التشغيل</div>
 </div>
-
-<!-- MOBILE INTERFACE -->
-<div class="mobile-app" id="mobile-app" style="display:none">
-  <div id="mobile-globe-container"><div id="globe"></div></div>
-  
-  <div class="mobile-header">
-    <div class="mobile-header-top">
-      <div class="mobile-logo">🌍 Global Pulse</div>
-      <div class="mobile-time" id="mobile-clock">00:00</div>
-    </div>
-    <div class="mobile-stats">
-      <div class="mobile-stat">
-        <span class="mobile-stat-label">الأحداث</span>
-        <span class="mobile-stat-value" id="mobile-stat-events">0</span>
-      </div>
-      <div class="mobile-stat">
-        <span class="mobile-stat-label">مستوى التهديد</span>
-        <span class="mobile-stat-value" id="mobile-threat">LOW</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="mobile-tabs">
-    <button class="mobile-tab active" data-tab="map">🗺️<span>الخريطة</span></button>
-    <button class="mobile-tab" data-tab="news">📡<span>الأخبار</span></button>
-    <button class="mobile-tab" data-tab="stats">📊<span>الإحصائيات</span></button>
-  </div>
-
-  <div class="mobile-content">
-    <div class="mobile-tab-content active" id="tab-map">
-      <div class="globe-hint">اضغط على الخريطة للتنقل</div>
-    </div>
-    
-    <div class="mobile-tab-content" id="tab-news">
-      <div class="mobile-news-controls">
-        <input type="text" id="mobile-search" placeholder="بحث في الأخبار..." class="mobile-search-input" />
-      </div>
-      <div class="mobile-news-filters">
-        <button class="mobile-filter-btn active" data-filter="all">الكل</button>
-        <button class="mobile-filter-btn" data-filter="conflict">صراع</button>
-        <button class="mobile-filter-btn" data-filter="political">سياسة</button>
-        <button class="mobile-filter-btn" data-filter="economic">اقتصاد</button>
-      </div>
-      <div class="mobile-news-list" id="mobile-news-list">
-        <div class="mobile-news-loading">جاري التحميل...</div>
-      </div>
-    </div>
-    
-    <div class="mobile-tab-content" id="tab-stats">
-      <div class="mobile-stats-grid">
-        <div class="mobile-stat-card">
-          <div class="mobile-stat-card-title">الأحداث 24 ساعة</div>
-          <div class="mobile-stat-card-value" id="stats-events">0</div>
-        </div>
-        <div class="mobile-stat-card">
-          <div class="mobile-stat-card-title">المناطق النشطة</div>
-          <div class="mobile-stat-card-value" id="stats-regions">0</div>
-        </div>
-        <div class="mobile-stat-card">
-          <div class="mobile-stat-card-title">مستوى التهديد</div>
-          <div class="mobile-stat-card-value" id="stats-threat">LOW</div>
-        </div>
-        <div class="mobile-stat-card">
-          <div class="mobile-stat-card-title">آخر تحديث</div>
-          <div class="mobile-stat-card-value" id="stats-update">--:--</div>
-        </div>
-      </div>
-      <div class="mobile-threat-indicator">
-        <div class="mobile-threat-bar">
-          <div class="mobile-threat-segment on"></div>
-          <div class="mobile-threat-segment on"></div>
-          <div class="mobile-threat-segment on"></div>
-          <div class="mobile-threat-segment on"></div>
-          <div class="mobile-threat-segment"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- DESKTOP INTERFACE -->
-<div id="desktop-app" style="display:none">
 <div class="grid-overlay"></div>
 <div class="vignette"></div>
 <div class="scanlines"></div>
-<div id="globe-container"><div id="globe"></div></div>
+<div class="globe-wrap"><div id="globe"></div></div>
 <div class="globe-glow"></div>
 <div class="top-chrome">
   <div class="panel logo-card">
     <span class="br-bl"></span><span class="br-br"></span>
     <div class="logo-mark">
-      <div class="logo-ring"></div>
-      <div class="logo-ring r2"></div>
-      <div class="logo-ring r3"></div>
-      <img src="./logo.svg" alt="مرصد اخباري شامل" class="logo-image" />
-    </div>
-    <div class="logo-text">
-      <div class="brand">مرصد·<b>اخباري</b></div>
-      <div class="sub">الإصدار 0.1</div>
-    </div>
-  </div>
+          <div class="logo-ring"></div>
+          <div class="logo-ring r2"></div>
+          <div class="logo-ring r3"></div>
+          <img src="./logo.svg" alt="مرصد اخباري شامل" class="logo-image" />
+        </div>
+        <div class="logo-text">
+              <div class="brand">مرصد·<b>اخباري</b></div>
+              <div class="sub">الإصدار 0.1</div>
+            </div>
+      </div>
   <div class="panel stats-bar">
     <span class="br-bl"></span><span class="br-br"></span>
     <div class="stat">
@@ -175,12 +152,18 @@
 <div class="rail-l">
   <div class="panel">
     <span class="br-bl"></span><span class="br-br"></span>
-    <div class="panel-head"><h3><b>01</b> تصنيف الحدث</h3><span class="meta">5 / 5</span></div>
+    <div class="panel-head">
+      <h3><b>01</b> تصنيف الحدث</h3>
+      <span class="meta">5 / 5</span>
+    </div>
     <div class="cat-list" id="cat-list"></div>
   </div>
   <div class="panel">
     <span class="br-bl"></span><span class="br-br"></span>
-    <div class="panel-head"><h3><b>02</b> مؤشر التهديد الإقليمي</h3><span class="meta">عالمي</span></div>
+    <div class="panel-head">
+      <h3><b>02</b> مؤشر التهديد الإقليمي</h3>
+      <span class="meta">عالمي</span>
+    </div>
     <div class="threat-panel">
       <div class="threat-bar">
         <div class="threat-seg on" style="color:#06d6a0"></div>
@@ -190,44 +173,80 @@
         <div class="threat-seg" style="color:#ff3860"></div>
       </div>
       <div class="threat-labels">
-        <span class="l1">هادئ</span><span class="l2">مرتفع</span><span class="l3">حرج</span>
+        <span class="l1">هادئ</span>
+        <span class="l2">مرتفع</span>
+        <span class="l3">حرج</span>
       </div>
-      <div class="threat-current"><span class="lbl">الحالي</span><span class="vl">مرتفع · T3</span></div>
+      <div class="threat-current">
+        <span class="lbl">الحالي</span>
+        <span class="vl">مرتفع · T3</span>
+      </div>
     </div>
   </div>
   <div class="panel">
     <span class="br-bl"></span><span class="br-br"></span>
-    <div class="panel-head"><h3><b>03</b> قائمة المراقبة الإقليمية</h3><span class="meta">σ · 1 ساعة</span></div>
+    <div class="panel-head">
+      <h3><b>03</b> قائمة المراقبة الإقليمية</h3>
+      <span class="meta">σ · 1 ساعة</span>
+    </div>
     <div class="watchlist" id="watchlist"></div>
   </div>
 </div>
 <div class="rail-r">
-  <div class="panel feed-panel">
+<div class="panel feed-panel">
     <span class="br-bl"></span><span class="br-br"></span>
     <div class="panel-head">
-      <h3><b id="feed-count">0</b> البث الوارد · الأحبار المباشرة</h3>
+      <h3><b id="feed-count">0</b> البث الوارد · الأحداث المباشرة</h3>
       <span class="live-pill"><i></i>مباشر</span>
     </div>
     <div class="clear-feed-wrapper">
       <button class="clear-feed-btn" title="مسح القائمة">🗑️ مسح القائمة</button>
     </div>
     <div class="keyword-search-wrapper">
-      <input type="text" id="keyword-input" placeholder="أدخل كلمات مفتاحية مفصولة بفاصلة" class="keyword-input">
-      <button class="keyword-search-btn" id="keyword-search-btn">🔍 بحث</button>
-      <button class="keyword-clear-btn" id="keyword-clear-btn">✕ إلغاء البحث</button>
+    <input type="text" id="keyword-input" placeholder="أدخل كلمات مفتاحية مفصولة بفاصلة" class="keyword-input">
+    <button class="keyword-search-btn" id="keyword-search-btn">🔍 بحث</button>
+    <button class="keyword-clear-btn" id="keyword-clear-btn">✕ إلغاء البحث</button>
     </div>    
     <div class="export-feed-wrapper">
       <button class="export-feed-btn json-btn" title="تصدير JSON">📥 JSON</button>
       <button class="export-feed-btn csv-btn" title="تصدير CSV">📊 CSV</button>
     </div>    
     <div class="feed-filters">
-      <button class="feed-filter-btn factive" data-feed-filter="all"><span class="fpulse"></span>الكل<span class="fbadge" id="fbadge-all">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="conflict"><span class="fpulse"></span>صراع<span class="fbadge" id="fbadge-conflict">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="dispute"><span class="fpulse"></span>نزاع<span class="fbadge" id="fbadge-dispute">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="political"><span class="fpulse"></span>سياسة<span class="fbadge" id="fbadge-political">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="economic"><span class="fpulse"></span>اقتصاد<span class="fbadge" id="fbadge-economic">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="combat"><span class="fpulse"></span>قتال<span class="fbadge" id="fbadge-combat">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="telegram"><span class="fpulse"></span>تليجرام<span class="fbadge" id="fbadge-telegram">00</span></button>
+    <button class="feed-filter-btn factive" data-feed-filter="all">
+    <span class="fpulse"></span>
+    الكل
+    <span class="fbadge" id="fbadge-all">00</span>
+    </button>
+    <button class="feed-filter-btn" data-feed-filter="conflict">
+    <span class="fpulse"></span>
+    صراع
+    <span class="fbadge" id="fbadge-conflict">00</span>
+    </button>
+    <button class="feed-filter-btn" data-feed-filter="dispute">
+    <span class="fpulse"></span>
+    نزاع
+    <span class="fbadge" id="fbadge-dispute">00</span>
+    </button>
+    <button class="feed-filter-btn" data-feed-filter="political">
+    <span class="fpulse"></span>
+    سياسية
+    <span class="fbadge" id="fbadge-political">00</span>
+    </button>
+    <button class="feed-filter-btn" data-feed-filter="economic">
+    <span class="fpulse"></span>
+    اقتصادية
+    <span class="fbadge" id="fbadge-economic">00</span>
+    </button>
+    <button class="feed-filter-btn" data-feed-filter="combat">
+    <span class="fpulse"></span>
+    قتالية
+    <span class="fbadge" id="fbadge-combat">00</span>
+    </button>
+    <button class="feed-filter-btn" data-feed-filter="telegram">
+    <span class="fpulse"></span>
+    تليجرام
+    <span class="fbadge" id="fbadge-telegram">00</span>
+    </button>
     </div>
     <div class="feed-scroll"></div>
   </div>
@@ -237,23 +256,38 @@
       <h3><b>05</b> البث المباشر · القنوات والكاميرات</h3>
       <button class="stream-switch-btn" id="stream-switch-btn" title="تبديل القناة">الجزيرة ⟳</button>
     </div>
-    <div class="stream-body">
-      <iframe id="youtube-player" width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none;border-radius:2px;"></iframe>
-    </div>
+  <div class="stream-body">
+    <iframe id="youtube-player" 
+      width="100%" 
+      height="100%" 
+      src="" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen
+      style="border:none;border-radius:2px;">
+    </iframe>
+  </div>
   </div>
 </div>
 <div class="panel detail" id="detail"></div>
+</div>
 <div class="view-placeholder" id="view-placeholder" style="display:none"></div>
 <div class="hint">
-  <span><b>1-5</b>فلترة التصنيفات</span><span><b>سحب</b>تدوير الكرة</span><span><b>⌘K</b>الانتقال إلى مدينة</span><span><b>Esc</b>إغلاق اللوحة</span>
+  <span><b>1-5</b>فلترة التصنيفات</span>
+  <span><b>سحب</b>تدوير الكرة</span>
+  <span><b>⌘K</b>الانتقال إلى مدينة</span>
+  <span><b>Esc</b>إغلاق اللوحة</span>
 </div>
 <div class="ticker">
   <div class="ticker-label"><span class="dot"></span>البث المباشر</div>
-  <div class="ticker-track"><div class="ticker-stream" id="ticker-stream"></div></div>
-  <div class="ticker-right"><span>البث · طبيعي</span><span>التأخير · 42MS</span></div>
+  <div class="ticker-track">
+    <div class="ticker-stream" id="ticker-stream"></div>
+  </div>
+  <div class="ticker-right">
+    <span>البث · طبيعي</span>
+    <span>التأخير · 42MS</span>
+  </div>
 </div>
-</div>
-
 <script src="https://unpkg.com/globe.gl"></script>
 <script src="data.js"></script>
 <script src="app-v2.js"></script>
@@ -261,11 +295,15 @@
 <audio id="alert-high" src="alert-high.mp3" preload="auto"></audio>
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('/sw.js')
-    .then(reg=>console.log('[SW] مسجل:',reg.scope))
-    .catch(err=>console.log('[SW] فشل:',err));
-  });
+window.addEventListener('load',()=>{
+navigator.serviceWorker.register('/sw.js')
+.then((registration)=>{
+console.log('[SW] مسجل بنجاح:',registration.scope);
+})
+.catch((error)=>{
+console.log('[SW] فشل التسجيل:',error);
+});
+});
 }
 </script>
 </body>

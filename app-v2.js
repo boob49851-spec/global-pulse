@@ -564,33 +564,10 @@ function initGlobe() {
     requestAnimationFrame(labelZoomLoop);
   }
   requestAnimationFrame(labelZoomLoop);
-window.addEventListener('resize', () => {
-   globe.width(el.clientWidth);
-   globe.height(el.clientHeight);
- });
- let touchStartX = 0;
- let touchStartY = 0;
- let touchEndX = 0;
- let touchEndY = 0;
- function handleTouchStart(e) {
-   touchStartX = e.touches[0].clientX;
-   touchStartY = e.touches[0].clientY;
- }
- function handleTouchMove(e) {
-   if (!globe) return;
-   const deltaX = e.touches[0].clientX - touchStartX;
-   const deltaY = e.touches[0].clientY - touchStartY;
-   if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
-     e.preventDefault();
-   }
- }
- function handleTouchEnd(e) {
-   touchEndX = e.changedTouches[0].clientX;
-   touchEndY = e.changedTouches[0].clientY;
- }
- el.addEventListener('touchstart', handleTouchStart, { passive: true });
- el.addEventListener('touchmove', handleTouchMove, { passive: false });
- el.addEventListener('touchend', handleTouchEnd, { passive: true });
+  window.addEventListener('resize', () => {
+    globe.width(el.clientWidth);
+    globe.height(el.clientHeight);
+  });
 }
 function tooltipHtml(d) {
   return `
@@ -964,9 +941,7 @@ function cityJump(q) {
   }
 }
 function startLoops() {
-  const isMobile = window.innerWidth <= 768;
-  if (isMobile) startMobileFeedUpdates();
-  initWebSocket();   
+initWebSocket();   
 loadLiveStream();
 document.getElementById('stream-switch-btn').addEventListener('click',switchStream);
 let audioEnabled=false;
@@ -1164,241 +1139,34 @@ a.click();
 URL.revokeObjectURL(url);
 console.log('[Export] تم تصدير CSV - '+events.length+' حدث');
 }
-function initMobileFeatures() {
-  const isMobile = window.innerWidth <= 768;
-  if (!isMobile) return;
-  const mobilePanel = document.getElementById('mobile-panel');
-  const navButtons = document.querySelectorAll('.nav-btn');
-  if (!mobilePanel) return;
-  navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      navButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const view = btn.dataset.view;
-      if (view === 'feed') {
-        mobilePanel.classList.add('open');
-        mobilePanel.querySelector('.panel-title').textContent = 'الأخبار المباشرة';
-      } else if (view === 'map') {
-        mobilePanel.classList.remove('open');
-      }
-    });
-  });
-  let startY = 0;
-  let currentY = 0;
-  document.addEventListener('touchstart', e => {
-    if (e.touches[0].clientY < 100) return;
-    startY = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchmove', e => {
-    currentY = e.touches[0].clientY;
-    const diff = currentY - startY;
-    if (diff > 0 && mobilePanel && mobilePanel.classList.contains('open')) {
-      const progress = Math.min(diff / 300, 1);
-      mobilePanel.style.transform = `translateY(${progress * 100}%)`;
-    }
-  }, { passive: true });
-  document.addEventListener('touchend', () => {
-    if (!mobilePanel) return;
-    const diff = currentY - startY;
-    if (diff > 100) {
-      mobilePanel.classList.remove('open');
-      mobilePanel.style.transform = '';
-    } else {
-      mobilePanel.style.transform = '';
-    }
-  }, { passive: true });
-}
-function addMobileFeedItem(e) {
-  const c = CATS[e.cat] || { color: '#ff3860', label: e.cat };
-  const div = document.createElement('div');
-  div.className = 'mobile-feed-item';
-  div.innerHTML = `
-    <div class="category" style="background: ${c.color}20; color: ${c.color}">
-      ${c.label}
-    </div>
-    <div class="title">${e.title}</div>
-    <div class="meta">
-      <span>${e.threat || 'غير محدد'}</span>
-      <span>${e.source}</span>
-    </div>
-  `;
-  div.addEventListener('click', () => {
-    if (globe) {
-      userInteracted = true;
-      globe.controls().autoRotate = false;
-      const targetCity = CITIES[e.to];
-      if (targetCity) {
-        globe.pointOfView({
-          lat: targetCity.lat,
-          lng: targetCity.lng,
-          altitude: 1.6
-        }, 800);
-      }
-    }
-    const mobilePanel = document.getElementById('mobile-panel');
-    if (mobilePanel) mobilePanel.classList.remove('open');
-  });
-  return div;
-}
-function renderMobileFeed() {
-  const scroll = document.querySelector('.mobile-feed-scroll');
-  if (!scroll) return;
-  scroll.innerHTML = '';
-  events.slice(0, 50).forEach(e => {
-    scroll.appendChild(addMobileFeedItem(e));
-  });
-}
-let mobileFeedUpdateTimer;
-function startMobileFeedUpdates() {
-  if (mobileFeedUpdateTimer) clearInterval(mobileFeedUpdateTimer);
-  mobileFeedUpdateTimer = setInterval(renderMobileFeed, 30000);
-  renderMobileFeed();
-}
+const sheet = document.getElementById("bottom-sheet");
 
-function initMobileInterface() {
-  const isMobile = window.innerWidth <= 768;
-  const mobileApp = document.getElementById('mobile-app');
-  const desktopApp = document.getElementById('desktop-app');
-  
-  if (isMobile && mobileApp) {
-    mobileApp.style.display = 'flex';
-    initMobileTabs();
-    initMobileNews();
-    initMobileGlobe();
-  } else if (desktopApp) {
-    desktopApp.style.display = 'block';
-  }
-}
+let startY = 0;
+let currentY = 0;
+let isDragging = false;
 
-function initMobileTabs() {
-  const tabs = document.querySelectorAll('.mobile-tab');
-  const contents = document.querySelectorAll('.mobile-tab-content');
-  
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      
-      const targetTab = tab.dataset.tab;
-      contents.forEach(content => {
-        content.classList.toggle('active', content.id === `tab-${targetTab}`);
-      });
-      
-      if (targetTab === 'news' && globe) {
-        globe.controls().autoRotate = false;
-      } else if (targetTab === 'map' && globe) {
-        globe.controls().autoRotate = true;
-      }
-    });
-  });
-}
-
-function initMobileNews() {
-  const filterBtns = document.querySelectorAll('.mobile-filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderMobileNews(btn.dataset.filter);
-    });
-  });
-  
-  const searchInput = document.getElementById('mobile-search');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      filterNews(e.target.value);
-    });
-  }
-}
-
-function initMobileGlobe() {
-  const globeEl = document.getElementById('mobile-globe-container');
-  if (globeEl && !globeEl.dataset.initialized) {
-    globeEl.dataset.initialized = 'true';
-  }
-}
-
-function renderMobileNews(filter = 'all') {
-  const list = document.getElementById('mobile-news-list');
-  if (!list) return;
-  
-  list.innerHTML = '';
-  const filteredEvents = filter === 'all' ? events : events.filter(e => e.cat === filter || e.filter === filter);
-  
-  if (filteredEvents.length === 0) {
-    list.innerHTML = '<div class="mobile-news-loading">لا توجد أخبار متاحة</div>';
-    return;
-  }
-  
-  filteredEvents.slice(0, 50).forEach(e => {
-    const c = CATS[e.cat] || { color: '#ff3860', label: e.cat };
-    const div = document.createElement('div');
-    div.className = 'mobile-news-item';
-    div.innerHTML = `
-      <div class="mobile-news-category" style="background: ${c.color}20; color: ${c.color}">
-        ${c.label}
-      </div>
-      <div class="mobile-news-title">${e.title}</div>
-      <div class="mobile-news-meta">
-        <span>${e.threat || 'غير محدد'}</span>
-        <span>${e.source}</span>
-      </div>
-    `;
-    div.addEventListener('click', () => {
-      if (globe) {
-        userInteracted = true;
-        globe.controls().autoRotate = false;
-        const targetCity = CITIES[e.to];
-        if (targetCity) {
-          globe.pointOfView({
-            lat: targetCity.lat,
-            lng: targetCity.lng,
-            altitude: 1.6
-          }, 800);
-        }
-      }
-      const tabs = document.querySelectorAll('.mobile-tab');
-      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === 'map'));
-      document.querySelectorAll('.mobile-tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-map'));
-    });
-    list.appendChild(div);
-  });
-}
-
-function filterNews(query) {
-  if (!query) {
-    renderMobileNews(document.querySelector('.mobile-filter-btn.active')?.dataset.filter || 'all');
-    return;
-  }
-  
-  const list = document.getElementById('mobile-news-list');
-  if (!list) return;
-  
-  const filtered = events.filter(e => 
-    e.title.toLowerCase().includes(query.toLowerCase()) ||
-    (e.sum && e.sum.toLowerCase().includes(query.toLowerCase()))
-  );
-  
-  list.innerHTML = '';
-  filtered.slice(0, 30).forEach(e => {
-    const c = CATS[e.cat] || { color: '#ff3860', label: e.cat };
-    const div = document.createElement('div');
-    div.className = 'mobile-news-item';
-    div.innerHTML = `
-      <div class="mobile-news-category" style="background: ${c.color}20; color: ${c.color}">
-        ${c.label}
-      </div>
-      <div class="mobile-news-title">${e.title}</div>
-      <div class="mobile-news-meta">
-        <span>${e.threat || 'غير محدد'}</span>
-        <span>${e.source}</span>
-      </div>
-    `;
-    list.appendChild(div);
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  initMobileInterface();
-  runBoot();
+sheet.addEventListener("touchstart", (e) => {
+  startY = e.touches[0].clientY;
+  isDragging = true;
 });
+
+sheet.addEventListener("touchmove", (e) => {
+  if (!isDragging) return;
+  currentY = e.touches[0].clientY;
+  const diff = currentY - startY;
+
+  if (diff > 0) {
+    sheet.style.transform = `translateY(${diff}px)`;
+  }
+});
+
+sheet.addEventListener("touchend", () => {
+  isDragging = false;
+
+  if (currentY - startY > 100) {
+    sheet.classList.remove("open");
+  } else {
+    sheet.classList.add("open");
+  }
+});
+document.addEventListener('DOMContentLoaded', runBoot);
