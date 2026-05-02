@@ -85,8 +85,9 @@ loadLiveStream();
 }
 function initWebSocket(){
 try{
-const protocol=window.location.protocol==='https:'?'wss:':'ws:';
-wsConnection=new WebSocket(`${protocol}//${window.location.host}`);
+const WS_URL = "wss://global-pulse-vc0l.onrender.com";
+
+wsConnection = new WebSocket(WS_URL);
 wsConnection.addEventListener('open',()=>{
 console.log('[WebSocket] متصل بالسيرفر');
 });
@@ -1023,43 +1024,28 @@ document.querySelector('.csv-btn').addEventListener('click',exportToCSV);
   });
 }
 function showNewsNotification(event){
-if(Notification.permission!=="granted") return;
-const options={
-body:event.sum.substring(0,100),
-icon:"./logo.svg",
-badge:"./logo.svg",
-tag:`notification-${event.id}`,
-requireInteraction:true,
-actions:[
-{action:'open',title:'فتح المصدر'},
-{action:'close',title:'إغلاق'}
-],
-data:{
-url:event.url,
-title:event.title,
-category:event.cat,
-threat:event.threat
-}
-};
-if(event.threat==="CRITICAL"){
-options.tag='critical-alert';
-options.requireInteraction=true;
-options.badge="./logo.svg";
-}
-const notification=new Notification(`🔔 ${event.cat.toUpperCase()} - ${event.source}`,options);
-notification.addEventListener('click',(e)=>{
-if(e.action==='open'||!e.action){
-window.focus();
-window.open(event.url,'_blank');
-notification.close();
-}else if(e.action==='close'){
-notification.close();
-}
-});
-notification.addEventListener('close',()=>{
-console.log('[Notification] تم إغلاق الإشعار');
-});
-setTimeout(()=>notification.close(),10000);
+
+  if (Notification.permission !== "granted") return;
+
+  const options = {
+    body: event.sum.substring(0,100),
+    icon: "./logo.svg",
+    badge: "./logo.svg",
+    tag: event.threat === "CRITICAL" ? "critical-alert" : `notification-${event.id}`
+  };
+
+  const notification = new Notification(
+    `🔔 ${event.cat.toUpperCase()} - ${event.source}`,
+    options
+  );
+
+  notification.onclick = () => {
+    window.focus();
+    window.open(event.url, '_blank');
+    notification.close();
+  };
+
+  setTimeout(() => notification.close(), 10000);
 }
 function updateGlobalThreatLevel(){
 const el=document.getElementById("global-threat");
