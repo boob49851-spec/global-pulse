@@ -964,7 +964,9 @@ function cityJump(q) {
   }
 }
 function startLoops() {
-initWebSocket();   
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) startMobileFeedUpdates();
+  initWebSocket();   
 loadLiveStream();
 document.getElementById('stream-switch-btn').addEventListener('click',switchStream);
 let audioEnabled=false;
@@ -1162,34 +1164,96 @@ a.click();
 URL.revokeObjectURL(url);
 console.log('[Export] تم تصدير CSV - '+events.length+' حدث');
 }
-const sheet = document.getElementById("bottom-sheet");
-
-let startY = 0;
-let currentY = 0;
-let isDragging = false;
-
-sheet.addEventListener("touchstart", (e) => {
-  startY = e.touches[0].clientY;
-  isDragging = true;
+function initMobileFeatures() {
+  const isMobile = window.innerWidth <= 768;
+  if (!isMobile) return;
+  const mobilePanel = document.getElementById('mobile-panel');
+  const navButtons = document.querySelectorAll('.nav-btn');
+  if (!mobilePanel) return;
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const view = btn.dataset.view;
+      if (view === 'feed') {
+        mobilePanel.classList.add('open');
+        mobilePanel.querySelector('.panel-title').textContent = 'الأخبار المباشرة';
+      } else if (view === 'map') {
+        mobilePanel.classList.remove('open');
+      }
+    });
+  });
+  let startY = 0;
+  let currentY = 0;
+  document.addEventListener('touchstart', e => {
+    if (e.touches[0].clientY < 100) return;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+    if (diff > 0 && mobilePanel && mobilePanel.classList.contains('open')) {
+      const progress = Math.min(diff / 300, 1);
+      mobilePanel.style.transform = `translateY(${progress * 100}%)`;
+    }
+  }, { passive: true });
+  document.addEventListener('touchend', () => {
+    if (!mobilePanel) return;
+    const diff = currentY - startY;
+    if (diff > 100) {
+      mobilePanel.classList.remove('open');
+      mobilePanel.style.transform = '';
+    } else {
+      mobilePanel.style.transform = '';
+    }
+  }, { passive: true });
+}
+function addMobileFeedItem(e) {
+  const c = CATS[e.cat] || { color: '#ff3860', label: e.cat };
+  const div = document.createElement('div');
+  div.className = 'mobile-feed-item';
+  div.innerHTML = `
+    <div class="category" style="background: ${c.color}20; color: ${c.color}">
+      ${c.label}
+    </div>
+    <div class="title">${e.title}</div>
+    <div class="meta">
+      <span>${e.threat || 'غير محدد'}</span>
+      <span>${e.source}</span>
+    </div>
+  `;
+  div.addEventListener('click', () => {
+    if (globe) {
+      userInteracted = true;
+      globe.controls().autoRotate = false;
+      const targetCity = CITIES[e.to];
+      if (targetCity) {
+        globe.pointOfView({
+          lat: targetCity.lat,
+          lng: targetCity.lng,
+          altitude: 1.6
+        }, 800);
+      }
+    }
+    const mobilePanel = document.getElementById('mobile-panel');
+    if (mobilePanel) mobilePanel.classList.remove('open');
+  });
+  return div;
+}
+function renderMobileFeed() {
+  const scroll = document.querySelector('.mobile-feed-scroll');
+  if (!scroll) return;
+  scroll.innerHTML = '';
+  events.slice(0, 50).forEach(e => {
+    scroll.appendChild(addMobileFeedItem(e));
+  });
+}
+let mobileFeedUpdateTimer;
+function startMobileFeedUpdates() {
+  if (mobileFeedUpdateTimer) clearInterval(mobileFeedUpdateTimer);
+  mobileFeedUpdateTimer = setInterval(renderMobileFeed, 30000);
+  renderMobileFeed();
+}
+document.addEventListener('DOMContentLoaded', function() {
+  runBoot();
 });
-
-sheet.addEventListener("touchmove", (e) => {
-  if (!isDragging) return;
-  currentY = e.touches[0].clientY;
-  const diff = currentY - startY;
-
-  if (diff > 0) {
-    sheet.style.transform = `translateY(${diff}px)`;
-  }
-});
-
-sheet.addEventListener("touchend", () => {
-  isDragging = false;
-
-  if (currentY - startY > 100) {
-    sheet.classList.remove("open");
-  } else {
-    sheet.classList.add("open");
-  }
-});
-document.addEventListener('DOMContentLoaded', runBoot);
