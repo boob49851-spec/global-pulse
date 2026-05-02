@@ -881,3 +881,58 @@ body{
 }
 
 }
+.mobile-ui {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  overflow: hidden;
+}
+
+/* 🌍 Globe */
+#globe-container {
+  position: absolute;
+  inset: 0;
+}
+
+/* 🔝 Top bar */
+.top-bar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+/* 📥 Bottom sheet */
+.sheet {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 70%;
+  background: #0b0f14;
+  border-radius: 20px 20px 0 0;
+  transform: translateY(60%);
+  transition: transform 0.3s;
+}
+
+.sheet.open {
+  transform: translateY(0);
+}
+
+/* handle */
+.sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: #555;
+  margin: 10px auto;
+  border-radius: 10px;
+}
+
+/* feed */
+.feed-scroll {
+  overflow-y: auto;
+  height: 100%;
+}

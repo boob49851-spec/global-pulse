@@ -1153,4 +1153,34 @@ a.click();
 URL.revokeObjectURL(url);
 console.log('[Export] تم تصدير CSV - '+events.length+' حدث');
 }
+const sheet = document.getElementById("bottom-sheet");
+
+let startY = 0;
+let currentY = 0;
+let isDragging = false;
+
+sheet.addEventListener("touchstart", (e) => {
+  startY = e.touches[0].clientY;
+  isDragging = true;
+});
+
+sheet.addEventListener("touchmove", (e) => {
+  if (!isDragging) return;
+  currentY = e.touches[0].clientY;
+  const diff = currentY - startY;
+
+  if (diff > 0) {
+    sheet.style.transform = `translateY(${diff}px)`;
+  }
+});
+
+sheet.addEventListener("touchend", () => {
+  isDragging = false;
+
+  if (currentY - startY > 100) {
+    sheet.classList.remove("open");
+  } else {
+    sheet.classList.add("open");
+  }
+});
 document.addEventListener('DOMContentLoaded', runBoot);
