@@ -1254,14 +1254,151 @@ function startMobileFeedUpdates() {
   mobileFeedUpdateTimer = setInterval(renderMobileFeed, 30000);
   renderMobileFeed();
 }
-document.addEventListener('DOMContentLoaded', function() {
+
+function initMobileInterface() {
   const isMobile = window.innerWidth <= 768;
-  if (isMobile) {
-    const mobileElements = document.querySelectorAll('.app-header, .bottom-nav, .mobile-panel');
-    mobileElements.forEach(el => el.style.removeProperty('display'));
-  } else {
-    const desktopElements = document.querySelectorAll('.top-chrome, .toolbar, .rail-l, .rail-r, .detail, .hint, .ticker');
-    desktopElements.forEach(el => el.style.removeProperty('display'));
+  const mobileApp = document.getElementById('mobile-app');
+  const desktopApp = document.getElementById('desktop-app');
+  
+  if (isMobile && mobileApp) {
+    mobileApp.style.display = 'flex';
+    initMobileTabs();
+    initMobileNews();
+    initMobileGlobe();
+  } else if (desktopApp) {
+    desktopApp.style.display = 'block';
   }
+}
+
+function initMobileTabs() {
+  const tabs = document.querySelectorAll('.mobile-tab');
+  const contents = document.querySelectorAll('.mobile-tab-content');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      const targetTab = tab.dataset.tab;
+      contents.forEach(content => {
+        content.classList.toggle('active', content.id === `tab-${targetTab}`);
+      });
+      
+      if (targetTab === 'news' && globe) {
+        globe.controls().autoRotate = false;
+      } else if (targetTab === 'map' && globe) {
+        globe.controls().autoRotate = true;
+      }
+    });
+  });
+}
+
+function initMobileNews() {
+  const filterBtns = document.querySelectorAll('.mobile-filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMobileNews(btn.dataset.filter);
+    });
+  });
+  
+  const searchInput = document.getElementById('mobile-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      filterNews(e.target.value);
+    });
+  }
+}
+
+function initMobileGlobe() {
+  const globeEl = document.getElementById('mobile-globe-container');
+  if (globeEl && !globeEl.dataset.initialized) {
+    globeEl.dataset.initialized = 'true';
+  }
+}
+
+function renderMobileNews(filter = 'all') {
+  const list = document.getElementById('mobile-news-list');
+  if (!list) return;
+  
+  list.innerHTML = '';
+  const filteredEvents = filter === 'all' ? events : events.filter(e => e.cat === filter || e.filter === filter);
+  
+  if (filteredEvents.length === 0) {
+    list.innerHTML = '<div class="mobile-news-loading">لا توجد أخبار متاحة</div>';
+    return;
+  }
+  
+  filteredEvents.slice(0, 50).forEach(e => {
+    const c = CATS[e.cat] || { color: '#ff3860', label: e.cat };
+    const div = document.createElement('div');
+    div.className = 'mobile-news-item';
+    div.innerHTML = `
+      <div class="mobile-news-category" style="background: ${c.color}20; color: ${c.color}">
+        ${c.label}
+      </div>
+      <div class="mobile-news-title">${e.title}</div>
+      <div class="mobile-news-meta">
+        <span>${e.threat || 'غير محدد'}</span>
+        <span>${e.source}</span>
+      </div>
+    `;
+    div.addEventListener('click', () => {
+      if (globe) {
+        userInteracted = true;
+        globe.controls().autoRotate = false;
+        const targetCity = CITIES[e.to];
+        if (targetCity) {
+          globe.pointOfView({
+            lat: targetCity.lat,
+            lng: targetCity.lng,
+            altitude: 1.6
+          }, 800);
+        }
+      }
+      const tabs = document.querySelectorAll('.mobile-tab');
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === 'map'));
+      document.querySelectorAll('.mobile-tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-map'));
+    });
+    list.appendChild(div);
+  });
+}
+
+function filterNews(query) {
+  if (!query) {
+    renderMobileNews(document.querySelector('.mobile-filter-btn.active')?.dataset.filter || 'all');
+    return;
+  }
+  
+  const list = document.getElementById('mobile-news-list');
+  if (!list) return;
+  
+  const filtered = events.filter(e => 
+    e.title.toLowerCase().includes(query.toLowerCase()) ||
+    (e.sum && e.sum.toLowerCase().includes(query.toLowerCase()))
+  );
+  
+  list.innerHTML = '';
+  filtered.slice(0, 30).forEach(e => {
+    const c = CATS[e.cat] || { color: '#ff3860', label: e.cat };
+    const div = document.createElement('div');
+    div.className = 'mobile-news-item';
+    div.innerHTML = `
+      <div class="mobile-news-category" style="background: ${c.color}20; color: ${c.color}">
+        ${c.label}
+      </div>
+      <div class="mobile-news-title">${e.title}</div>
+      <div class="mobile-news-meta">
+        <span>${e.threat || 'غير محدد'}</span>
+        <span>${e.source}</span>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initMobileInterface();
   runBoot();
 });

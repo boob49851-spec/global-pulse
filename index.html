@@ -8,57 +8,109 @@
 <meta name="theme-color" content="#02040a" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="format-detection" content="telephone=no" />
-<meta name="format-detection" content="email=no" />
-<title>مرصد اخباري شامل — منصة المراقبة الإخبارية</title>
+<title>مرصد اخباري شامل</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles-v2.css" />
 <link rel="icon" type="image/svg+xml" href="logo.svg" />
 <link rel="manifest" href="/manifest.json" />
 </head>
 <body>
-<div class="boot" id="boot-screen">
+<div class="boot">
   <div class="boot-logo"><img src="./logo.svg" class="boot-bird" /></div>
   <div class="boot-brand">مرصد اخباري شامل</div>
   <div class="boot-progress"><div class="boot-progress-bar"></div></div>
   <div class="boot-log">› جاري التشغيل</div>
 </div>
-<div id="app-container" class="app-container">
-  <div id="globe-container"><div id="globe"></div></div>
-  <div class="app-header" style="display:none">
-    <div class="header-top">
-      <div class="logo">🌍 Global Pulse</div>
-      <div class="header-time" id="mobile-clock">00:00</div>
+
+<!-- MOBILE INTERFACE -->
+<div class="mobile-app" id="mobile-app" style="display:none">
+  <div id="mobile-globe-container"><div id="globe"></div></div>
+  
+  <div class="mobile-header">
+    <div class="mobile-header-top">
+      <div class="mobile-logo">🌍 Global Pulse</div>
+      <div class="mobile-time" id="mobile-clock">00:00</div>
+    </div>
+    <div class="mobile-stats">
+      <div class="mobile-stat">
+        <span class="mobile-stat-label">الأحداث</span>
+        <span class="mobile-stat-value" id="mobile-stat-events">0</span>
+      </div>
+      <div class="mobile-stat">
+        <span class="mobile-stat-label">مستوى التهديد</span>
+        <span class="mobile-stat-value" id="mobile-threat">LOW</span>
+      </div>
     </div>
   </div>
-  <div class="bottom-nav" style="display:none">
-    <button class="nav-btn active" data-view="feed">📡<span>الأخبار</span></button>
-    <button class="nav-btn" data-view="map">🗺️<span>الخريطة</span></button>
-    <button class="nav-btn" data-view="stats">📊<span>الإحصائيات</span></button>
+
+  <div class="mobile-tabs">
+    <button class="mobile-tab active" data-tab="map">🗺️<span>الخريطة</span></button>
+    <button class="mobile-tab" data-tab="news">📡<span>الأخبار</span></button>
+    <button class="mobile-tab" data-tab="stats">📊<span>الإحصائيات</span></button>
   </div>
-  <div class="mobile-panel" id="mobile-panel" style="display:none">
-    <div class="panel-header">
-      <div class="panel-handle"></div>
-      <div class="panel-title">الأخبار المباشرة</div>
+
+  <div class="mobile-content">
+    <div class="mobile-tab-content active" id="tab-map">
+      <div class="globe-hint">اضغط على الخريطة للتنقل</div>
     </div>
-    <div class="panel-content">
-      <div class="feed-controls">
-        <input type="text" id="mobile-search" placeholder="بحث..." class="mobile-search" />
+    
+    <div class="mobile-tab-content" id="tab-news">
+      <div class="mobile-news-controls">
+        <input type="text" id="mobile-search" placeholder="بحث في الأخبار..." class="mobile-search-input" />
       </div>
-      <div class="feed-filters-mobile">
-        <button class="filter-btn active" data-filter="all">الكل</button>
-        <button class="filter-btn" data-filter="conflict">صراع</button>
-        <button class="filter-btn" data-filter="political">سياسة</button>
-        <button class="filter-btn" data-filter="economic">اقتصاد</button>
+      <div class="mobile-news-filters">
+        <button class="mobile-filter-btn active" data-filter="all">الكل</button>
+        <button class="mobile-filter-btn" data-filter="conflict">صراع</button>
+        <button class="mobile-filter-btn" data-filter="political">سياسة</button>
+        <button class="mobile-filter-btn" data-filter="economic">اقتصاد</button>
       </div>
-      <div class="mobile-feed-scroll"></div>
+      <div class="mobile-news-list" id="mobile-news-list">
+        <div class="mobile-news-loading">جاري التحميل...</div>
+      </div>
+    </div>
+    
+    <div class="mobile-tab-content" id="tab-stats">
+      <div class="mobile-stats-grid">
+        <div class="mobile-stat-card">
+          <div class="mobile-stat-card-title">الأحداث 24 ساعة</div>
+          <div class="mobile-stat-card-value" id="stats-events">0</div>
+        </div>
+        <div class="mobile-stat-card">
+          <div class="mobile-stat-card-title">المناطق النشطة</div>
+          <div class="mobile-stat-card-value" id="stats-regions">0</div>
+        </div>
+        <div class="mobile-stat-card">
+          <div class="mobile-stat-card-title">مستوى التهديد</div>
+          <div class="mobile-stat-card-value" id="stats-threat">LOW</div>
+        </div>
+        <div class="mobile-stat-card">
+          <div class="mobile-stat-card-title">آخر تحديث</div>
+          <div class="mobile-stat-card-value" id="stats-update">--:--</div>
+        </div>
+      </div>
+      <div class="mobile-threat-indicator">
+        <div class="mobile-threat-bar">
+          <div class="mobile-threat-segment on"></div>
+          <div class="mobile-threat-segment on"></div>
+          <div class="mobile-threat-segment on"></div>
+          <div class="mobile-threat-segment on"></div>
+          <div class="mobile-threat-segment"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="top-chrome" style="display:none">
+<!-- DESKTOP INTERFACE -->
+<div id="desktop-app" style="display:none">
+<div class="grid-overlay"></div>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+<div id="globe-container"><div id="globe"></div></div>
+<div class="globe-glow"></div>
+<div class="top-chrome">
   <div class="panel logo-card">
     <span class="br-bl"></span><span class="br-br"></span>
     <div class="logo-mark">
@@ -93,7 +145,7 @@
     </div>
   </div>
 </div>
-<div class="toolbar" style="display:none">
+<div class="toolbar">
   <div class="toolbar-section tabs">
     <button class="tab active" data-view="live"><span class="n">01</span> الخريطة المباشرة</button>
     <button class="tab" data-view="timeline"><span class="n">02</span> الجدول الزمني</button>
@@ -120,7 +172,7 @@
     <button class="tbtn">⬇ تصدير</button>
   </div>
 </div>
-<div class="rail-l" style="display:none">
+<div class="rail-l">
   <div class="panel">
     <span class="br-bl"></span><span class="br-br"></span>
     <div class="panel-head"><h3><b>01</b> تصنيف الحدث</h3><span class="meta">5 / 5</span></div>
@@ -149,7 +201,7 @@
     <div class="watchlist" id="watchlist"></div>
   </div>
 </div>
-<div class="rail-r" style="display:none">
+<div class="rail-r">
   <div class="panel feed-panel">
     <span class="br-bl"></span><span class="br-br"></span>
     <div class="panel-head">
@@ -172,9 +224,9 @@
       <button class="feed-filter-btn factive" data-feed-filter="all"><span class="fpulse"></span>الكل<span class="fbadge" id="fbadge-all">00</span></button>
       <button class="feed-filter-btn" data-feed-filter="conflict"><span class="fpulse"></span>صراع<span class="fbadge" id="fbadge-conflict">00</span></button>
       <button class="feed-filter-btn" data-feed-filter="dispute"><span class="fpulse"></span>نزاع<span class="fbadge" id="fbadge-dispute">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="political"><span class="fpulse"></span>سياسية<span class="fbadge" id="fbadge-political">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="economic"><span class="fpulse"></span>اقتصادية<span class="fbadge" id="fbadge-economic">00</span></button>
-      <button class="feed-filter-btn" data-feed-filter="combat"><span class="fpulse"></span>قتالية<span class="fbadge" id="fbadge-combat">00</span></button>
+      <button class="feed-filter-btn" data-feed-filter="political"><span class="fpulse"></span>سياسة<span class="fbadge" id="fbadge-political">00</span></button>
+      <button class="feed-filter-btn" data-feed-filter="economic"><span class="fpulse"></span>اقتصاد<span class="fbadge" id="fbadge-economic">00</span></button>
+      <button class="feed-filter-btn" data-feed-filter="combat"><span class="fpulse"></span>قتال<span class="fbadge" id="fbadge-combat">00</span></button>
       <button class="feed-filter-btn" data-feed-filter="telegram"><span class="fpulse"></span>تليجرام<span class="fbadge" id="fbadge-telegram">00</span></button>
     </div>
     <div class="feed-scroll"></div>
@@ -190,46 +242,18 @@
     </div>
   </div>
 </div>
-<div class="panel detail" id="detail" style="display:none"></div>
+<div class="panel detail" id="detail"></div>
 <div class="view-placeholder" id="view-placeholder" style="display:none"></div>
-<div class="hint" style="display:none">
+<div class="hint">
   <span><b>1-5</b>فلترة التصنيفات</span><span><b>سحب</b>تدوير الكرة</span><span><b>⌘K</b>الانتقال إلى مدينة</span><span><b>Esc</b>إغلاق اللوحة</span>
 </div>
-<div class="ticker" style="display:none">
+<div class="ticker">
   <div class="ticker-label"><span class="dot"></span>البث المباشر</div>
   <div class="ticker-track"><div class="ticker-stream" id="ticker-stream"></div></div>
   <div class="ticker-right"><span>البث · طبيعي</span><span>التأخير · 42MS</span></div>
 </div>
-  <div class="app-header">
-    <div class="header-top">
-      <div class="logo">🌍 Global Pulse</div>
-      <div class="header-time" id="mobile-clock">00:00</div>
-    </div>
-  </div>
-  <div class="bottom-nav">
-    <button class="nav-btn active" data-view="feed">📡<span>الأخبار</span></button>
-    <button class="nav-btn" data-view="map">🗺️<span>الخريطة</span></button>
-    <button class="nav-btn" data-view="stats">📊<span>الإحصائيات</span></button>
-  </div>
-  <div class="mobile-panel" id="mobile-panel">
-    <div class="panel-header">
-      <div class="panel-handle"></div>
-      <div class="panel-title">الأخبار المباشرة</div>
-    </div>
-    <div class="panel-content">
-      <div class="feed-controls">
-        <input type="text" id="mobile-search" placeholder="بحث..." class="mobile-search" />
-      </div>
-      <div class="feed-filters-mobile">
-        <button class="filter-btn active" data-filter="all">الكل</button>
-        <button class="filter-btn" data-filter="conflict">صراع</button>
-        <button class="filter-btn" data-filter="political">سياسة</button>
-        <button class="filter-btn" data-filter="economic">اقتصاد</button>
-      </div>
-      <div class="mobile-feed-scroll"></div>
-    </div>
-  </div>
 </div>
+
 <script src="https://unpkg.com/globe.gl"></script>
 <script src="data.js"></script>
 <script src="app-v2.js"></script>
