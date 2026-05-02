@@ -803,3 +803,81 @@ transform:translateY(0);
 }
 
 }
+/* ===== MOBILE UI ===== */
+@media (max-width:768px){
+
+body{
+  margin:0;
+  overflow:auto;
+  background:#02040a;
+}
+
+/* إخفاء النسخة القديمة */
+.top-chrome,
+.toolbar,
+.rail-l,
+.rail-r,
+.detail,
+.ticker,
+.hint{
+  display:none !important;
+}
+
+/* App */
+.mobile-app{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+/* Header */
+.m-header{
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  background:rgba(10,16,30,.9);
+  font-size:14px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+/* Globe */
+.m-globe{
+  height:45vh;
+}
+
+/* Content */
+.m-content{
+  flex:1;
+  overflow:auto;
+  padding:10px;
+}
+
+/* Feed Card */
+.m-card{
+  background:rgba(255,255,255,0.03);
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:6px;
+}
+
+/* Tabs */
+.m-tabs{
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
+  background:#050912;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+
+.m-tab{
+  background:none;
+  border:none;
+  font-size:18px;
+  color:#888;
+}
+
+.m-tab.active{
+  color:#4cc9f0;
+}
+
+}
